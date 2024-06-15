@@ -20,7 +20,7 @@ public class DiccionarioTrie {
     }
 
     // Método para insertar una palabra con su definición en el Trie
-    public void insert(String word, String definition) { //Debería ser Node en vez de string no?
+    public void insert(String word, String definition) {
         TrieNode current = root;
         for (char ch : word.toCharArray()) {
             int index = ch - 'a';
