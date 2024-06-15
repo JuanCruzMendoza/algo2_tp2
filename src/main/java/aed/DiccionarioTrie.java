@@ -1,43 +1,61 @@
 package aed;
 
-import java.util.ArrayList;
+class TrieNode {
+    TrieNode[] children;
+    boolean isEndOfWord;
+    String definition;
 
-public class DiccionarioTrie<K,V> implements Diccionario<K,V>{
+    public TrieNode() {
+        children = new TrieNode[26]; // 26 letras del alfabeto inglés
+        isEndOfWord = false;
+        definition = null;
+    }
+}
 
-    ArrayList<Nodo<K>> raiz;
+public class DiccionarioTrie {
+    private final TrieNode root;
 
-    class Nodo<T> {
-        T valor;
-        Nodo<T> izquierda;
-        Nodo<T> derecha;
-        Nodo<T> padre;
+    public DiccionarioTrie() {
+        root = new TrieNode();
+    }
 
-        public Nodo(T v) {
-            valor = v;
-            izquierda = null;
-            derecha = null;
-            padre = null;
+    // Método para insertar una palabra con su definición en el Trie
+    public void insert(String word, String definition) {
+        TrieNode current = root;
+        for (char ch : word.toCharArray()) {
+            int index = ch - 'a';
+            if (current.children[index] == null) {
+                current.children[index] = new TrieNode();
+            }
+            current = current.children[index];
         }
-    }
-    
-
-    public DiccionarioTrie<K,V> crearDiccionario(){
-        throw new UnsupportedOperationException("No implementada aun");
+        current.isEndOfWord = true;
+        current.definition = definition;
     }
 
-    public void definir(K clave, V valor){
-        throw new UnsupportedOperationException("No implementada aun");
+    // Método para buscar una palabra en el Trie
+    public String search(String word) {
+        TrieNode current = root;
+        for (char ch : word.toCharArray()) {
+            int index = ch - 'a';
+            if (current.children[index] == null) {
+                return null;
+            }
+            current = current.children[index];
+        }
+        return current.isEndOfWord ? current.definition : null;
     }
 
-    public Boolean pertenece(){
-        throw new UnsupportedOperationException("No implementada aun");
-    }
 
-    public void borrar(K clave){
-        throw new UnsupportedOperationException("No implementada aun");
-    }
 
-    public V obtener(K clave){
-        throw new UnsupportedOperationException("No implementada aun");
+    public static void main(String[] args) {
+        DiccionarioTrie diccionario = new DiccionarioTrie();
+
+        diccionario.insert("hello", "a greeting");
+        diccionario.insert("world", "the earth, together with all of its countries and peoples");
+
+        System.out.println(diccionario.search("hello")); // "a greeting"
+        System.out.println(diccionario.search("hell"));  // null
+        System.out.println(diccionario.search("world")); // "the earth, together with all of its countries and peoples"
     }
 }
