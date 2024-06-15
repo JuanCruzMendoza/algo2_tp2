@@ -2,13 +2,7 @@ Módulo SIU
   var carreras: DiccionarioTrie<Nombre_carrera, DiccionarioTrie< Nombre_materia, Clase_Materia<> >
   var estudiantes: DiccionarioTrie< LU, Cant_materias_inscriptas >
 
-  proc crearNuevoSistem(in infoMaterias: seq<InfoMateria>, in libretasUniversitarias<str>) : implSIU
-    for materia in infoMaterias:
-      
-      
-  
-
 Módulo Clase_Materia:
-  ListaEnlazada< tupla< Nombre_materia, DiccionarioTrie< Nombre_materia, Clase_Materia> > >
-  Array<int>(4)
+  var ListaEnlazada< tupla< Nombre_materia, DiccionarioTrie< Nombre_materia, Clase_Materia> > >
+  var Array<int>(4)
   
