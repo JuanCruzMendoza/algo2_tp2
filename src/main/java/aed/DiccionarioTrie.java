@@ -1,4 +1,5 @@
 package aed;
+
 class TrieNode<V> {
     TrieNode<V>[] hijos; // Array de nodos hijos
     V valor; // Valor asociado al nodo
@@ -48,17 +49,9 @@ public class DiccionarioTrie<V> {
         return nodo.esFinDePalabra ? nodo.valor : null;
     }
 
-    // Método para verificar si una palabra pertenece al Trie (como palabra completa o como prefijo)
-    public boolean contiene(String palabra) {
-        TrieNode<V> nodo = raiz;
-        for (char c : palabra.toCharArray()) {
-            int indice = c - 'a';
-            if (nodo.hijos[indice] == null) {
-                return false;
-            }
-            nodo = nodo.hijos[indice];
-        }
-        return true; // Devuelve true si llega al final de la palabra sin encontrar nulos
+    // Método para verificar si una palabra completa pertenece al Trie
+    public boolean pertenece(String palabra) {
+        return buscar(palabra) != null;
     }
 
     // Método para eliminar una palabra del Trie
@@ -119,8 +112,8 @@ public class DiccionarioTrie<V> {
         System.out.println(trie.buscar("manzana"));   // devuelve null
         System.out.println(trie.buscar("man"));       // devuelve "Abreviatura de hombre"
 
-        System.out.println(trie.contiene("man"));     // devuelve true
-        System.out.println(trie.contiene("manz"));    // devuelve true
-        System.out.println(trie.contiene("banana"));  // devuelve false
+        System.out.println(trie.pertenece("man"));     // devuelve true
+        System.out.println(trie.pertenece("manz"));    // devuelve false
+        System.out.println(trie.pertenece("banana"));  // devuelve false
     }
 }
