@@ -2,6 +2,7 @@ package aed;
 
 // Clase para representar el Diccionario Trie
 public class DiccionarioTrie<V> {
+
     private NodoTrie<V> raiz; // Nodo raíz del Trie
 
     // Clase de nodos
@@ -13,13 +14,14 @@ public class DiccionarioTrie<V> {
         // Constructor de nodo
         @SuppressWarnings("unchecked")
         public NodoTrie() {
-            hijos = new NodoTrie[128]; // Asumiendo caracteres ASCII
+            hijos = new NodoTrie[255]; // Asumiendo caracteres ASCII extendido (con 256 caracteres)
             valor = null;
             esFinDePalabra = false;
         }
     }
 
     // Constructor de diccionario
+    // O(1)
     public DiccionarioTrie() {
         raiz = new NodoTrie<>();
     }
@@ -37,7 +39,7 @@ public class DiccionarioTrie<V> {
         }
         return true;
 
-        // Complejidad estaVacioNodo(): 128 * O(1) = O(1)
+        // Complejidad estaVacioNodo(): 256 * O(1) = O(1)
     }
 
     // Método para verificar si un diccionario esta vacio
@@ -57,7 +59,7 @@ public class DiccionarioTrie<V> {
         for (char c : clave.toCharArray()) {
 
             // O(1): comparaciones y asignaciones
-            int indice = c - 'a';
+            int indice = (int) c;
             if (nodo_actual.hijos[indice] == null) {
                 nodo_actual.hijos[indice] = new NodoTrie<>();
             }
@@ -73,13 +75,14 @@ public class DiccionarioTrie<V> {
 
     // Método para buscar una clave y obtener su valor
     public V buscar(String clave) {
+        
         NodoTrie<V> nodo = raiz;
 
         // Se ejecuta |clave| veces: recorre los caracteres de clave 
         for (char c : clave.toCharArray()) {
 
             // O(1): asignaciones y comparaciones
-            int indice = c - 'a';
+            int indice = (int) c;
             if (nodo.hijos[indice] == null) {
                 return null;
             }
@@ -134,7 +137,7 @@ public class DiccionarioTrie<V> {
         // Obtenemos el indice del hijo y su nodo
         // O(1): asignaciones
         char c = clave.charAt(indice);
-        int indiceHijo = c - 'a';
+        int indiceHijo = (int) c;
         NodoTrie<V> nodo = actual.hijos[indiceHijo];
 
         // Si el nodo no existe, la clave no esta en el diccionario
@@ -159,6 +162,33 @@ public class DiccionarioTrie<V> {
         return false;
 
         // Complejidad eliminarAux(): O(1) + O(1) + O(1) + O(|clave|) + O(1) = O(|clave|)
+    }
+
+    // Método para obtener todas las claves almacenadas en el Trie
+    public ListaEnlazada<String> obtenerClaves() {
+        ListaEnlazada<String> resultado = new ListaEnlazada<>();
+        obtenerClavesAux(raiz, "", resultado);
+        return resultado;
+    }
+
+    // Método recursivo auxiliar para obtener todas las claves almacenadas en el Trie
+    private void obtenerClavesAux(NodoTrie<V> nodo, String prefijo, ListaEnlazada<String> resultado) {
+
+        // O(1)
+        if (nodo == null) {
+            return;
+        }
+
+        // O(1)
+        if (nodo.esFinDePalabra) {
+            resultado.agregarAtras(prefijo);
+        }
+
+        for (char c = 0; c < 255; c++) {
+            if (nodo.hijos[c] != null) {
+                obtenerClavesAux(nodo.hijos[c], prefijo + (char) c, resultado);
+            }
+        }
     }
 
 }
