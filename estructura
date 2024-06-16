@@ -1,8 +1,10 @@
 Módulo SIU
   var carreras: DiccionarioTrie<Nombre_carrera, DiccionarioTrie< Nombre_materia, Clase_Materia<> >
-  var estudiantes: DiccionarioTrie< LU, Cant_materias_inscriptas >
+  var estudiantes: DiccionarioTrie< Estudiante, Cant_materias_inscriptas >
 
 Módulo Materia:
-  var ListaEnlazada< tupla< Nombre_materia, DiccionarioTrie< Nombre_materia, Clase_Materia> > >
+  var nombres ListaEnlazada< Nombre_materia >
+  var carreras_comunes: ListaEnlazada< DiccionarioTrie< Nombre_materia, Clase_materia> >
+  var inscriptos: ListaEnlazada< Estudiante >
   var Array<int>(4)
   
