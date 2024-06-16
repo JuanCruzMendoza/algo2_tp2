@@ -4,6 +4,6 @@ Módulo SIU
 
 Módulo Materia:
   var nombres ListaEnlazada< tupla< Nombre_materia, DiccionarioTrie< Nombre_materia, Clase_Materia> > >
-  var inscriptos: ListaEnlazada<LU>
+  var inscriptos: int
   var Array<int>(4)
   
