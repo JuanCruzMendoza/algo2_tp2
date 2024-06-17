@@ -7,12 +7,13 @@ public class SistemaSIU {
 
     // Referencia para complejidades:
     // |M|: cantidad de materias
-    // |m|: longitud del nombre de una materia
+    // |m|: longitud del nombre de una materia m
     // |C|: cantidad de carreras
     // |c|: longitud del nombre de una carrera
     // |M_c|: cantidad de materias de una carrera c
+    // |m_c|: longitud del nombre de una materia m de una carrera c
     // |N_m|: cantidad de nombres de una materia m
-    // |n|: longitud de uno de los nombres de una materia
+    // |n|: longitud de uno de los nombres n de una materia
     // E: cantidad total de estudiantes
     // E_m: cantidad de estudiantes de una materia m
     // |estudiante|: longitud de libreta universitaria (acotada)
@@ -24,6 +25,7 @@ public class SistemaSIU {
     // buscar(): O(|clave|)
     // pertenece(): O(|clave|)
     // eliminar(): O(|clave|)
+    // obtenerClaves(): O(n*|clave|)
 
     // ListaEnlazada:
     // ListaEnlazada(): O(1)
@@ -41,6 +43,8 @@ public class SistemaSIU {
         PROF
     }
 
+    
+    // Método para crear sistema, con la informacion de las materias de cada carrera y los estudiantes
     public SistemaSIU(InfoMateria[] infoMaterias, String[] libretasUniversitarias){
 
         estudiantes = new DiccionarioTrie<>();
@@ -100,6 +104,8 @@ public class SistemaSIU {
 
     } // Complejidad SistemaSIU():  O( |C| * |M_c| * |c| + |M| * |N_m| * |n| + E)
 
+
+    // Método para inscribir a un estudiante en una materia, dada también la carrera
     public void inscribir(String estudiante, String carrera, String materia){
 
         // O(|estudiante|) = O(1)
@@ -117,6 +123,7 @@ public class SistemaSIU {
     } // Complejidad inscribir(): O(1) + O(1) + O(|c|) + O(|m|) + O(1) = O(|c| + |m|)
 
 
+    // Método para agergar un docente a una materia, dada también la carrera
     public void agregarDocente(CargoDocente cargo, String carrera, String materia){
 
         // O(|c|) + O(|m|)
@@ -129,6 +136,7 @@ public class SistemaSIU {
     } // Complejidad agregarDocente(): O(1) + O(|c|) + O(|m|) = O(|c| + |m|)
 
 
+    // Método para devolver un Array con 4 posiciones, donde cada una corresponde a la cantidad de docentes: [PROF, JTP, AY1, AY2]
     public int[] plantelDocente(String materia, String carrera){
 
         // O(|c|) + O(|m|)
@@ -137,6 +145,7 @@ public class SistemaSIU {
         return materia_obj.docentes;
 
     } // Complejidad plantelDocente(): O(|c| + |m|)
+
 
     public void cerrarMateria(String materia, String carrera){
 
@@ -154,7 +163,8 @@ public class SistemaSIU {
             // Buscamos la cantidad de materias que tiene y restamos 1: O(|estudiante) + O(|estudiante|) = O(1)
             int cant_materias = this.estudiantes.buscar(estudiante);
             this.estudiantes.insertar(estudiante, cant_materias-1);
-        }
+
+        } // E_m * O(1) = O(E_m)
 
         // Para cada carrera, eliminamos la materia (teniendo en cuenta que tiene diferentes nombres en cada una)
         // Se ejecuta |N_m| veces
@@ -173,9 +183,10 @@ public class SistemaSIU {
             carrera_dicc.eliminar(nombre_materia);
         } // |N_m| * O(1) * O(|n|)  = O(|N_m| * |n|)
 
-    } // Complejidad cerrarMateria(): O(|c|) + O(|m|) + O(|N_m| * |n|) = O(|c| + |m| + |N_m| * |n|)
+    } // Complejidad cerrarMateria(): O(|c|) + O(|m|) + O(E_m) + O(|N_m| * |n|) = O(|c| + |m| + |N_m| * |n| + E_m)
 
-    
+
+    // Método que devuelve la cantidad de alumnos inscriptos en una materia, dada también una carrera
     public int inscriptos(String materia, String carrera){
 
         // Encontramos la materia: O(|c|) + O(|m|)
@@ -187,6 +198,8 @@ public class SistemaSIU {
     } // Complejidad inscriptos(): O(|c| + |m|)
 
 
+    // Método para determinar si la cantidad de estudiantes excede la capacidad de la materia, dada las siguientes condiciones:
+    // Debe haber a lo sumo 250 estudiantes por cada profesor, 100 por cada JTP, 20 por cada AY1 y 30 por cada AY2
     public boolean excedeCupo(String materia, String carrera){
 
         // Encontramos la materia: O(|c|) + O(|m|)
@@ -196,7 +209,8 @@ public class SistemaSIU {
         int[] docentes = materia_obj.docentes;
         int cant_estudiantes = materia_obj.inscriptos.longitud();
 
-        // Para que no exceda el cupo, se deben cumplir las siguientes 4 condiciones:
+        // Si excede el cupo, significa que se cumple algunas de las siguientes condiciones:
+        // O(1): comparaciones
         boolean excede_cupo = 
             docentes[3] * 30 < cant_estudiantes // condicion para AY2
             || docentes[2] * 20 < cant_estudiantes // condicion para AY1
@@ -208,35 +222,57 @@ public class SistemaSIU {
     } // Complejidad excedeCupo(): O(|c| + |m|)
 
 
+    // Método para devolver un Array con todas las carreras del sistema
     public String[] carreras(){
+
+        // Obtenemos todas las claves del diccionario carreras en una lista: O(|C| * |c|)
+        // Por como esta implementado obtenerClaves(), las Strings estan ordenadas lexicográficamente
         ListaEnlazada<String> lista_carreras = this.carreras.obtenerClaves();
+
+        // Para pasar de una ListaEnlazada a un Array, armamos un iterador para recorrer lista_carreras
+        // y guardar los valores en un nuevo Array carreras_arr: O(1)
         IteradorLista<String> iterador_carreras = lista_carreras.iterador();
-        
         String[] carreras_arr = new String[lista_carreras.longitud()];
 
+        // Recorremos lista_carreras: se ejecuta |C| veces
         for (int i = 0; i < lista_carreras.longitud(); i++){
+
+            // O(1)
             carreras_arr[i] = iterador_carreras.siguiente();
-        }
+
+        } // |C| * O(1) = O(|C|)
 
         return carreras_arr;
-    }
 
+    } // Complejidad carreras(): O(|C|*|c|) + O(1) + O(|C|) = (con |c|>0) O(|C|*|c|)
+
+
+    // Método para devolver un Array con todas las materias de una carrera
     public String[] materias(String carrera){
 
+        // Buscamos el diccionario de las materias de la carrera y obtenemos sus claves en una lista: O(|c| + |M_c| * |m_c|)
+        // Por como esta implementado obtenerClaves(), las Strings están ordenadas lexicográficamente
         ListaEnlazada<String> lista_materias = this.carreras.buscar(carrera).obtenerClaves();	  
-        IteradorLista<String> iterador_lista = lista_materias.iterador();
-        
-        // Creamos el array de materias con la longitud de la lista de materias
-        String[] materias_arr = new String[lista_materias.longitud()];
 
+        // Para pasar de una ListaEnlazada a un Array, armamos un iterador para recorrer lista_carreras
+        // y guardar los valores en un nuevo Array materias_arr: O(1)
+        IteradorLista<String> iterador_lista = lista_materias.iterador();
+        String[] materias_arr = new String[lista_materias.longitud()]; 
+
+        // Recorremos lista_materias: se ejecuta |M_c| veces
         for (int i = 0; i < lista_materias.longitud(); i++){
-            materias_arr[i] = iterador_lista.siguiente();
-        }
+
+            // O(1)
+            materias_arr[i] = iterador_lista.siguiente(); 
+
+        } // |M_c| * O(1) = O(|M_c)
 
         return materias_arr;
-    }
+
+    } // Complejidad materias(): O(|c| + |M_c| * |m_c|) + O(1) + O(|M_c|) = (con |m_c|>0) O(|c| + |M_c| * |m_c|)
 
 
+    // Método para devolver la cantidad de materias inscriptas de un estudiante
     public int materiasInscriptas(String estudiante){
 
         // Encuentra la cantidad de materias inscriptas en diccionario: O(|estudiante|) = O(1)

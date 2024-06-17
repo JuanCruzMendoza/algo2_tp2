@@ -38,9 +38,9 @@ public class DiccionarioTrie<V> {
             }
         }
         return true;
+        
+    } // Complejidad estaVacioNodo(): 256 * O(1) = O(1)
 
-        // Complejidad estaVacioNodo(): 256 * O(1) = O(1)
-    }
 
     // Método para verificar si un diccionario esta vacio
     public boolean estaVacio(){
@@ -48,8 +48,9 @@ public class DiccionarioTrie<V> {
         // O(1): solo utiliza estaVacioNodo()
         return estaVacioNodo(this.raiz);
 
-        // Complejidad estaVacio(): O(1)
-    }
+        
+    } // Complejidad estaVacio(): O(1)
+
 
     // Método para insertar una clave con su valor asociado
     public void insertar(String clave, V valor) {
@@ -70,8 +71,8 @@ public class DiccionarioTrie<V> {
         nodo_actual.esFinDePalabra = true;
         nodo_actual.valor = valor;
 
-        // Complejidad insertar(): |clave| * O(1) + O(1) = O(|clave|)
-    } 
+    } // Complejidad insertar(): |clave| * O(1) + O(1) = O(|clave|)
+
 
     // Método para buscar una clave y obtener su valor
     public V buscar(String clave) {
@@ -96,8 +97,8 @@ public class DiccionarioTrie<V> {
             return null;
         }
 
-        // Complejidad buscar(): |clave|*O(1) + O(1) = O(|clave|)
-    }
+    } // Complejidad buscar(): |clave|*O(1) + O(1) = O(|clave|)
+
 
     // Método para verificar si una clave pertenece al Trie
     public boolean pertenece(String clave) {
@@ -105,8 +106,8 @@ public class DiccionarioTrie<V> {
         // O(|clave|): misma complejidad que buscar()
         return buscar(clave) != null;
 
-        // Complejidad pertenece(): O(|clave|)
-    }
+    } // Complejidad pertenece(): O(|clave|)
+
 
     // Método para eliminar una clave del Trie
     public boolean eliminar(String clave) {
@@ -114,8 +115,8 @@ public class DiccionarioTrie<V> {
         // O(|clave|): misma complejidad que eliminarAux()
         return eliminarAux(raiz, clave, 0);
 
-        // Complejidad eliminar(): O(|clave|)
-    }
+    } // Complejidad eliminar(): O(|clave|)
+
 
     // Método recursivo auxiliar para eliminar una clave del Trie
     private boolean eliminarAux(NodoTrie<V> actual, String clave, int indice) {
@@ -161,34 +162,43 @@ public class DiccionarioTrie<V> {
 
         return false;
 
-        // Complejidad eliminarAux(): O(1) + O(1) + O(1) + O(|clave|) + O(1) = O(|clave|)
-    }
+    }  // Complejidad eliminarAux(): O(1) + O(1) + O(1) + O(|clave|) + O(1) = O(|clave|)
+
 
     // Método para obtener todas las claves almacenadas en el Trie
     public ListaEnlazada<String> obtenerClaves() {
         ListaEnlazada<String> resultado = new ListaEnlazada<>();
+
+        // Busca las claves todas las claves y las agrega a la lista: O(n*|clave|)
         obtenerClavesAux(raiz, "", resultado);
         return resultado;
-    }
+
+    } // Complejidad obtenerClaves(): O(n*|clave|)
+
 
     // Método recursivo auxiliar para obtener todas las claves almacenadas en el Trie
     private void obtenerClavesAux(NodoTrie<V> nodo, String prefijo, ListaEnlazada<String> resultado) {
 
-        // O(1)
+        // Cuando llega a un nodo null, corta la funcion: O(1)
         if (nodo == null) {
             return;
         }
 
-        // O(1)
+        // Si el nodo es el fin de la palabra clave, la agrega a la lista: O(1)
         if (nodo.esFinDePalabra) {
             resultado.agregarAtras(prefijo);
         }
 
-        for (char c = 0; c < 255; c++) {
+        // Se ejecuta 256 veces (una por cada caracter de ASCII extendido)
+        for (char c = 0; c < 256; c++) {
+
+            // Para cada caracter, si el hijo del nodo no es null, agrega las claves recursivamente
+            // En el peor caso, cada clave tiene todos los caracteres distintos: O(n * |clave|), siendo n la cantidad de claves
+            // Como recorre desde 0 hasta 255, las claves se van agregando en orden lexicografico
             if (nodo.hijos[c] != null) {
                 obtenerClavesAux(nodo.hijos[c], prefijo + (char) c, resultado);
             }
         }
-    }
+    } // Complejidad obtenerClavesAux(): O(1) + O(1) + O(n*|clave|) = O(n*|clave|)
 
 }
