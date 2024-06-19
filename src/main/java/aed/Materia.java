@@ -11,6 +11,9 @@ package aed;
 // Todos los elemntos del conjunto implementado en la lista enlazada "nombres" son claves del
 // Diccionariotrie que a su vez es valor del DiccionarioTrie "carrera" del modulo Siu.
 
+// "docentes" es un conjunto implementado con un Arreglo de longitud 4, cuyas posiciones representan los cargos de docentes,
+// y sus valores la cantidad de ese cargo en una materia. 
+
 
 public class Materia {
 
