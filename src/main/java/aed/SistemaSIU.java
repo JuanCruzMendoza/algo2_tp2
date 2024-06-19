@@ -8,7 +8,7 @@ package aed;
 // ser clave del Diccionariotrie del conjunto "ListaEnlazada" "carreras_comunes".
 
 // Existen claves del DiccionarioTrie que a su vez son valores del DiccionartioTrie "carreras" que son elementos 
-//que pertenecen al conjunto "nombres" del modulo "Materia"
+// que pertenecen al conjunto "nombres" del modulo "Materia"
 // Habrà al menos un nombre del alguna mateia eb todo modulo "Materia"
 
 public class SistemaSIU {
