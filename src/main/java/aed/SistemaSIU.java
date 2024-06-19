@@ -1,5 +1,16 @@
 package aed;
 
+// Existen claves del DiccionarioTrie "Estudiantes" que son elementos que pertenecen al conjunto "inscriptos" del modulo
+// "Materia"
+// Si la materia no tiene estudiantes inscriptos, entonces  no se cuimple lo mencionado arriba.
+
+// Existen claves del DiccionarioTrie que a su vez es valor del DiccionarioTrie "carreras" que cumple con
+// ser clave del Diccionariotrie del conjunto "ListaEnlazada" "carreras_comunes".
+
+// Existen claves del DiccionarioTrie que a su vez son valores del DiccionartioTrie "carreras" que son elementos 
+//que pertenecen al conjunto "nombres" del modulo "Materia"
+// Habrà al menos un nombre del alguna mateia eb todo modulo "Materia"
+
 public class SistemaSIU {
 
     DiccionarioTrie<Integer> estudiantes;

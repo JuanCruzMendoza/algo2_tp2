@@ -1,5 +1,17 @@
 package aed;
 
+
+// Invariante de representacion:
+// Todos los elemntos del conjunto implementado en la lista enlazada "inscriptos" son claves del
+// Diccionariotrie "Estudiantes" del modulo Siu.
+
+// Todos las claves de los DiccionariosTries que estàn dentro del conjunto listaEnlazada "carrerras_comunes"  son claves del
+// DiccionarioTrie que es el valor de diccionariosTrie carreras.
+
+// Todos los elemntos del conjunto implementado en la lista enlazada "nombres" son claves del
+// Diccionariotrie que a su vez es valor del DiccionarioTrie "carrera" del modulo Siu.
+
+
 public class Materia {
 
     public int[] docentes;
