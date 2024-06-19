@@ -1,8 +1,10 @@
 package aed;
 // Invariante de Representaciòn.
 // EL trie es un arbol, por lo tanto no tiene ciclos, y todas las claves del trie no se repiten.
+// Si los hijos de un nodo valen null, entonces ese nodo es una hoja.
+// Si el trie esta esta vacio, entonces la raiz vale null. 
 // Existen prefijos en el trie, que son lo snodos definidos antes de llegar a una hoja.
-// Como las claves del DiccionarioTrie "Estuidiantes" son acotadas, sus operaciones tienen complejidad de O(1). 
+// Como las claves del DiccionarioTrie "Estuidiantes" son acotadas, sus operaciones tienen complejidad de O(1).
 
 
 // Clase para representar el Diccionario Trie
