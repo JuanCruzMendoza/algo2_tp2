@@ -2,8 +2,8 @@ import java.util.*;
 
 // Invariante Representativo.
 // Si la lista está vacía (longitud = 0)entonces los punteros primero y ultimo valen null.
-// Si la lista no está vacía (longitud > 0) entonces lo spunteros primero y ultimo no son null.
-// el primero.sig tampoco es null para todas las posiciones intermedias.
+// Si la lista no está vacía (longitud > 0) entonces los punteros primero y ultimo no son null.
+// el "primero.sig" tampoco es null para todas las posiciones intermedias.
 // La longitud tiene que ser el numero de los nodos en la lista.
 // Todos los nodos deben estar correctamente encadenados entre primero y ultimNodo,
 // sin nodos colgantes o ciclos.
