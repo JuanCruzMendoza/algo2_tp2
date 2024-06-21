@@ -1,16 +1,24 @@
 package aed;
-// Invariante de Representaciòn.
-// EL trie es un arbol, por lo tanto no tiene ciclos, y todas las claves del trie no se repiten.
-// Si los hijos de un nodo valen null, entonces ese nodo es una hoja.
-// Si el trie esta esta vacio, entonces la raiz vale null. 
-// Existen prefijos en el trie, que son lo snodos definidos antes de llegar a una hoja.
-// Como las claves del DiccionarioTrie "Estuidiantes" son acotadas, sus operaciones tienen complejidad de O(1).
-
 
 // Clase para representar el Diccionario Trie
 public class DiccionarioTrie<V> {
 
+    // Esta implementación de Diccionario al estar hecha con un Trie, asume que la clave siempre es una String
+
     private NodoTrie<V> raiz; // Nodo raíz del Trie
+
+    // Invariante de Representación:
+    // - El Trie es un árbol, por lo que no tiene ciclos, y tiene un nodo raíz .
+    // - Si la raíz es null, el diccionario está vacío.
+    // - Cada nodo tiene 256 hijos (que representan cada caracter de ASCII extendido), aunque pueden ser null.
+    // - Si los hijos de un nodo valen null, entonces ese nodo es una hoja.
+    // - Los nodos hojas tienen esFinDePalabra = True, y el resto tienen esFinDePalabra = False.
+    // - Todas las hojas son alcanzables partiendo del nodo raíz.
+    // - El camino desde la raíz hasta cualquier nodo corresponde a una clave String del diccionario.
+    // - El diccionario no tiene claves repetidas.
+    // - El atributo valor de un nodo es siempre null, a no ser que sea un nodo hoja, en cuyo caso tiene el valor (de tipo V) 
+    // asociado a la palabra clave utilizada para llegar hasta ese nodo.
+    // - Todos los nodos o tienen valor distinto de null o tiene algún hijo distinto de null.
 
     // Clase de nodos
     private class NodoTrie<T> {
@@ -36,7 +44,7 @@ public class DiccionarioTrie<V> {
     // Método para verificar si un nodo está vacío (sin hijos)
     private boolean estaVacioNodo(NodoTrie<V> nodo) {
 
-        // Se ejecuta 128 veces (hijos tiene siempre la misma longitud)
+        // Se ejecuta 256 veces (hijos tiene siempre la misma longitud)
         for (NodoTrie<V> hijo : nodo.hijos) {
 
             // O(1): comparacion
@@ -54,7 +62,6 @@ public class DiccionarioTrie<V> {
 
         // O(1): solo utiliza estaVacioNodo()
         return estaVacioNodo(this.raiz);
-
         
     } // Complejidad estaVacio(): O(1)
 
@@ -138,11 +145,11 @@ public class DiccionarioTrie<V> {
             }
             actual.esFinDePalabra = false;
 
-            // Si no esta vacio, significa que la clave no pertenece al diccionario
+            // Si no esta vacío, significa que la clave no pertenece al diccionario
             return estaVacioNodo(actual); // O(1)
         }
 
-        // Obtenemos el indice del hijo y su nodo
+        // Obtenemos el índice del hijo y su nodo
         // O(1): asignaciones
         char c = clave.charAt(indice);
         int indiceHijo = (int) c;
@@ -197,15 +204,18 @@ public class DiccionarioTrie<V> {
         }
 
         // Se ejecuta 256 veces (una por cada caracter de ASCII extendido)
-        for (char c = 0; c < 256; c++) {
+        for (char c = 0; c < 255; c++) {
 
             // Para cada caracter, si el hijo del nodo no es null, agrega las claves recursivamente
-            // En el peor caso, cada clave tiene todos los caracteres distintos: O(n * |clave|), siendo n la cantidad de claves
             // Como recorre desde 0 hasta 255, las claves se van agregando en orden lexicografico
             if (nodo.hijos[c] != null) {
                 obtenerClavesAux(nodo.hijos[c], prefijo + (char) c, resultado);
             }
-        }
+        } 
+        // En el peor caso, cada clave tiene todos los caracteres distintos y el Trie está lleno, pero cada recorrido de los nodos siempre 
+        // lleva a una hoja con una clave asociada. Entonces, para cada clave sólo recorremos cada uno de sus caracteres: O(n * |clave|), 
+        // siendo n la cantidad de claves y |clave| la longitud de la clave de mayor longitud.
+
     } // Complejidad obtenerClavesAux(): O(1) + O(1) + O(n*|clave|) = O(n*|clave|)
 
 }

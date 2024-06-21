@@ -1,22 +1,48 @@
 package aed;
 
-// Existen claves del DiccionarioTrie "Estudiantes" que son elementos que pertenecen al conjunto "inscriptos" del modulo
-// "Materia"
-// Si la materia no tiene estudiantes inscriptos, entonces  no se cuimple lo mencionado arriba.
-
-// Existen claves del DiccionarioTrie que a su vez es valor del DiccionarioTrie "carreras" que cumple con
-// ser clave del Diccionariotrie del conjunto "ListaEnlazada" "carreras_comunes".
-
-// Existen claves del DiccionarioTrie que a su vez son valores del DiccionartioTrie "carreras" que son elementos 
-// que pertenecen al conjunto "nombres" del modulo "Materia"
-// Habrà al menos un nombre del alguna mateia eb todo modulo "Materia"
-
 public class SistemaSIU {
 
+    // Atributos del Sistema
     DiccionarioTrie<Integer> estudiantes;
     DiccionarioTrie<DiccionarioTrie<Materia>> carreras;
 
-    // Referencia para complejidades:
+    // Invariante de representacion:
+
+    // - SistemaSIU se construye con un único Array de InfoMateria, junto con un Array de Strings libretasUniversitarias
+
+    // - Diccionario carreras: cada clave es un nombre de una carrera (String) y su valor es otro diccionario, cuyas claves a su vez 
+    // son los nombres de las diferentes materias (String) que tiene la carrera y están asociadas a instancias de la clase Materia. 
+    // Cada instancia de Materia está asociada a una única materia sin importar los distintos nombres que pueda tener para cada carrera.
+    // De esta manera, si dos carreras cuentan con la misma materia, pero con diferentes nombres, con este diccionario podemos llegar 
+    // a la misma instancia Materia, la cual almacena la información de sus inscriptos y sus docentes (ver Materia.java para más detalles).
+    
+    // - Relación SistemaSIU.carreras - InfoMateria[]: 
+    // El conjunto de nombres distintos de carreras pertenecientes a los pares carrera - materia de cada instancia de InfoMateria 
+    // son las claves de SistemaSIU.carreras. 
+    // Además, dado un ParCarreraMateria p de cualquier instancia de InfoMateria, se cumple que p.nombreMateria es clave del diccionario 
+    // carreras.obtener(p.carrera).
+    // A cada instancia distinta de Materia dentro de los diccionarios de carreras le corresponde una instancia de InfoMateria 
+    // con la cual es construída.
+
+    // - Diccionario estudiantes: cada clave es una libreta universitaria (String) de un estudiante, cuyo valor asociado 
+    // es la cantidad de materias (entero mayor o igual a cero) a las que está inscripto dicho estudiante.
+    // Por otro lado, dada la lista libretasUniversitarias, cada elemento de la misma es clave del diccionario estudiantes.
+
+    // - Relación SistemaSIU.estudiantes - Materia.inscriptos (lista de LU): dado n = estudiantes[LU] cantidad de materias, 
+    // habrá n instancias de Materia (dentro de SistemaSIU.carreras) donde aparecerá LU como elemento de Materia.inscriptos 
+    // (sólo una vez en cada lista).
+
+    // - Relación SistemaSIU.carreras - Materia.carreras_comunes - Materia.nombres: 
+    // Dada una instancia Materia, cada diccionario de Materia.carreras_comunes referencia a algún diccionario de SistemaSIU.carreras.
+    // Para un i en rango y una carrera c, si SistemaSIU.carreras.obtener(c) = Materia.carreras_comunes[i] (referencian al mismo diccionario)
+    // entonces SistemaSIU.carreras.obtener(c).obtener(Materia.nombres[i]) = Materia (podemos llegar a la misma instancia Materia).
+    // La cantidad de elementos de Materia.carreras_comunes (y de Materia.nombres) de cada instancia de Materia es igual a la cantidad 
+    // de claves de cada diccionario de SistemaSIU.carreras (es decir, la cantidad de nombres de cada materia por el número total de 
+    // materias será igual a la cantidad de materias de cada carrera por el número total de carreras).
+
+
+    // - Referencia para complejidades:
+
     // |M|: cantidad de materias
     // |m|: longitud del nombre de una materia m
     // |C|: cantidad de carreras
@@ -29,7 +55,7 @@ public class SistemaSIU {
     // E_m: cantidad de estudiantes de una materia m
     // |estudiante|: longitud de libreta universitaria (acotada)
     
-    // DiccionarioTrie, al estar implementado con un Trie, tiene las siguientes complejidades:
+    // - Complejidades de DiccionarioTrie:
     // DiccionarioTrie(): O(1)
     // estaVacio(): O(1)
     // insertar(): O(|clave|)
@@ -38,15 +64,16 @@ public class SistemaSIU {
     // eliminar(): O(|clave|)
     // obtenerClaves(): O(n*|clave|)
 
-    // ListaEnlazada:
+    // - Complejidades de ListaEnlazada:
     // ListaEnlazada(): O(1)
     // longitud(): O(1)
     // agregarAtras(): O(1)
     // obtener(): O(n)
     // eliminar(): O(n)
     // modificarPosicion(): O(n)
-    // ListaIterador(), haySiguiente(), siguiente(): O(1)
+    // iterador(), haySiguiente(), siguiente(): O(1)
 
+    
     enum CargoDocente{
         AY2,
         AY1,
@@ -72,8 +99,10 @@ public class SistemaSIU {
         // Se ejecuta |M| veces
         for(InfoMateria info: infoMaterias){
 
+            // O(1)
             Materia nueva_materia = new Materia(); 
 
+            // O(1)
             ParCarreraMateria[] pares_carrera_materia = info.getParesCarreraMateria();
 
             // Se ejecuta |N_m| veces
@@ -165,7 +194,7 @@ public class SistemaSIU {
 
         // A cada estudiante inscripto, restamos 1 a su cantidad de materias inscriptas
         // Se ejecuta E_m veces
-        IteradorLista<String> iterador_estudiantes = materia_obj.inscriptos.iterador();
+        ListaEnlazada<String>.IteradorLista iterador_estudiantes = materia_obj.inscriptos.iterador();
         for (int i = 0; i < materia_obj.inscriptos.longitud(); i++){
 
             // Recorremos el iterador, tomando los estudiantes: O(1)
@@ -179,8 +208,8 @@ public class SistemaSIU {
 
         // Para cada carrera, eliminamos la materia (teniendo en cuenta que tiene diferentes nombres en cada una)
         // Se ejecuta |N_m| veces
-        IteradorLista<DiccionarioTrie<Materia>> iterador_carreras = materia_obj.carreras_comunes.iterador();
-        IteradorLista<String> iterador_nombres_materias = materia_obj.nombres.iterador();
+        ListaEnlazada<DiccionarioTrie<Materia>>.IteradorLista iterador_carreras = materia_obj.carreras_comunes.iterador();
+        ListaEnlazada<String>.IteradorLista iterador_nombres_materias = materia_obj.nombres.iterador();
         for (int i = 0; i < materia_obj.carreras_comunes.longitud(); i++){
 
             // Recorremos las carreras donde se encuentra la materia, al mismo tiempo que recorremos los distintos nombres que tienen
@@ -192,6 +221,7 @@ public class SistemaSIU {
 
             // Borramos uno de los nombres de la materia en una carrera: O(|n|)
             carrera_dicc.eliminar(nombre_materia);
+
         } // |N_m| * O(1) * O(|n|)  = O(|N_m| * |n|)
 
     } // Complejidad cerrarMateria(): O(|c|) + O(|m|) + O(E_m) + O(|N_m| * |n|) = O(|c| + |m| + |N_m| * |n| + E_m)
@@ -237,12 +267,12 @@ public class SistemaSIU {
     public String[] carreras(){
 
         // Obtenemos todas las claves del diccionario carreras en una lista: O(|C| * |c|)
-        // Por como esta implementado obtenerClaves(), las Strings estan ordenadas lexicográficamente
+        // Por como está implementado obtenerClaves(), las Strings estan ordenadas lexicográficamente
         ListaEnlazada<String> lista_carreras = this.carreras.obtenerClaves();
 
         // Para pasar de una ListaEnlazada a un Array, armamos un iterador para recorrer lista_carreras
         // y guardar los valores en un nuevo Array carreras_arr: O(1)
-        IteradorLista<String> iterador_carreras = lista_carreras.iterador();
+        ListaEnlazada<String>.IteradorLista iterador_carreras = lista_carreras.iterador();
         String[] carreras_arr = new String[lista_carreras.longitud()];
 
         // Recorremos lista_carreras: se ejecuta |C| veces
@@ -267,7 +297,7 @@ public class SistemaSIU {
 
         // Para pasar de una ListaEnlazada a un Array, armamos un iterador para recorrer lista_carreras
         // y guardar los valores en un nuevo Array materias_arr: O(1)
-        IteradorLista<String> iterador_lista = lista_materias.iterador();
+        ListaEnlazada<String>.IteradorLista iterador_lista = lista_materias.iterador();
         String[] materias_arr = new String[lista_materias.longitud()]; 
 
         // Recorremos lista_materias: se ejecuta |M_c| veces
